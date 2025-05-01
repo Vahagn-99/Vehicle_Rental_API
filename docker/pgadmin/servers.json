@@ -1,0 +1,13 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "Carsharing Postgres",
+      "Group": "Servers",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "carsharing_db",
+      "Username": "carsharing_user",
+      "SSLMode": "prefer"
+    }
+  }
+}

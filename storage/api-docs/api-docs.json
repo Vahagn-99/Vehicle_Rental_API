@@ -1,0 +1,724 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Vehicle Rental API",
+        "description": "API для управления арендой транспортных средств",
+        "contact": {
+            "email": "vahagn99ghukasyan@gmail.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Авторизовать пользователя",
+                "operationId": "be2e78e5f93182d4403f839cc516d312",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "example": {
+                                "email": "admin@gmail.com",
+                                "password": "password"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешная авторизация",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "type": "string"
+                                        },
+                                        "expires_in": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизован"
+                    }
+                }
+            }
+        },
+        "/api/auth/me": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Получить информацию о текущем пользователе",
+                "operationId": "4f405e33417b7b74565767c1a7b51231",
+                "responses": {
+                    "200": {
+                        "description": "Информация о пользователе",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Renter"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Выйти из системы",
+                "operationId": "0b366af9c6842623aab9c8827c519b89",
+                "responses": {
+                    "200": {
+                        "description": "Успешный выход",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Вы вышли из системы"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/refresh": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Обновить токен доступа",
+                "operationId": "1a1e54a850ca4218b0388d92093ab652",
+                "responses": {
+                    "200": {
+                        "description": "Новый токен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "type": "string"
+                                        },
+                                        "expires_in": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/renters/balance": {
+            "get": {
+                "tags": [
+                    "Renter"
+                ],
+                "summary": "Получить баланс арендатора",
+                "operationId": "88aae9f7cdb5a24fd91d10525577b48c",
+                "responses": {
+                    "200": {
+                        "description": "Баланс арендатора",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Balance"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Renter"
+                ],
+                "summary": "Обновить баланс арендатора",
+                "operationId": "aa0764315227fe26f9a75116c2a4b0ad",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "status"
+                                ],
+                                "properties": {
+                                    "amount": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 100
+                                    },
+                                    "operation_type": {
+                                        "description": "Тип операции, где 1 это попалние, 2 списание",
+                                        "type": "number",
+                                        "format": "integer",
+                                        "enum": [
+                                            1,
+                                            2
+                                        ],
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Баланс обновлен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Баланс успешно обновлен"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибка обновления",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Недостаточно средств"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/renters/history": {
+            "get": {
+                "tags": [
+                    "Renter"
+                ],
+                "summary": "Получить историю аренд арендатора",
+                "operationId": "167982a4bcc76070746a589c5290648d",
+                "responses": {
+                    "200": {
+                        "description": "Список аренд",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/RentalHistory"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/renters/operations": {
+            "get": {
+                "tags": [
+                    "Renter"
+                ],
+                "summary": "Получить историю операций арендатора",
+                "operationId": "328ac4b3854078e19102de75c70d0950",
+                "responses": {
+                    "200": {
+                        "description": "Список операций",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/OperationsHistory"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/vehicles": {
+            "get": {
+                "tags": [
+                    "Vehicle"
+                ],
+                "summary": "Список всех ТС",
+                "operationId": "bcdde16293935e06d4c75c4339470415",
+                "responses": {
+                    "200": {
+                        "description": "Список ТС",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Vehicle"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/vehicles/{id}": {
+            "get": {
+                "tags": [
+                    "Vehicle"
+                ],
+                "summary": "Получить ТС по ID",
+                "operationId": "17b29272b3e37d1a2c440facdddecc7b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ТС найдено",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Vehicle"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/vehicles/{id}/status": {
+            "patch": {
+                "tags": [
+                    "Vehicle"
+                ],
+                "summary": "Обновить статус ТС",
+                "operationId": "7f30435a4b87830cc045be1b9a542311",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "status"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "example": "active"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Статус обновлён",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "updated": {
+                                            "type": "boolean",
+                                            "example": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/vehicles/{id}/location": {
+            "patch": {
+                "tags": [
+                    "Vehicle"
+                ],
+                "summary": "Обновить координаты ТС",
+                "operationId": "a656587485077fbf886b199ed22c5217",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "latitude",
+                                    "longitude"
+                                ],
+                                "properties": {
+                                    "latitude": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 40.7128
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": -74.006
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Локация обновлена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Vehicle"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Balance": {
+                "title": "Balance",
+                "description": "Ресурс для баланса",
+                "properties": {
+                    "id": {
+                        "description": "Идентификатор",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "renter_id": {
+                        "description": "Идентификатор орендатора",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "amount": {
+                        "description": "Сумма",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "currency": {
+                        "description": "Валюта",
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "1"
+                    }
+                },
+                "type": "object"
+            },
+            "OperationsHistory": {
+                "title": "OperationsHistory",
+                "description": "Ресурс для истории операций",
+                "properties": {
+                    "id": {
+                        "description": "Идентификатор",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "renter_id": {
+                        "description": "Идентификатор орендатора",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "status": {
+                        "description": "Статус операции",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "amount": {
+                        "description": "Сумма",
+                        "type": "number",
+                        "format": "float"
+                    }
+                },
+                "type": "object"
+            },
+            "RentalHistory": {
+                "title": "RentalHistory",
+                "description": "Ресурс для истории аренды",
+                "properties": {
+                    "id": {
+                        "description": "Идентификатор",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "renter_id": {
+                        "description": "Идентификатор орендатора",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "vehicle_id": {
+                        "description": "Идентификатор автомобиля",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "status": {
+                        "description": "Статус операции",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "started_at": {
+                        "description": "Дата начала",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "ended_at": {
+                        "description": "Дата окончания",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Renter": {
+                "title": "Renter",
+                "description": "Арендатор",
+                "properties": {
+                    "id": {
+                        "description": "Идентификатор",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "description": "Имя",
+                        "type": "string"
+                    },
+                    "email": {
+                        "description": "Email",
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "phone": {
+                        "description": "Телефон",
+                        "type": "string"
+                    },
+                    "status": {
+                        "description": "Статус",
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                },
+                "type": "object"
+            },
+            "Vehicle": {
+                "title": "Vehicle",
+                "description": "Автомобиль",
+                "properties": {
+                    "id": {
+                        "description": "Идентификатор",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "model_id": {
+                        "description": "Идентификатор модели",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "vin": {
+                        "description": "VIN номер",
+                        "type": "string"
+                    },
+                    "number_plate": {
+                        "description": "Номерной знак",
+                        "type": "string"
+                    },
+                    "status": {
+                        "description": "Статус автомобиля",
+                        "type": "string"
+                    },
+                    "location": {
+                        "description": "Местоположение автомобиля",
+                        "type": "object",
+                        "example": {
+                            "latitude": 40.7128,
+                            "longitude": -74.006
+                        }
+                    },
+                    "created_at": {
+                        "description": "Дата создания",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Дата обновления",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "Овторизация с помощью токена",
+                "name": "Token based Based",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
+            "name": "Renter",
+            "description": "Renter"
+        },
+        {
+            "name": "Vehicle",
+            "description": "Vehicle"
+        }
+    ]
+}
