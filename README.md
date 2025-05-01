@@ -25,7 +25,7 @@ docker compose up --build -d
 
 # (Опционально) Масштабировать API
 ```bash
-docker compose up --scale api=3 -d
+docker compose up --scale app=3 -d
 ```
 
 # скопировать .env
