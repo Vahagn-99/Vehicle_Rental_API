@@ -23,7 +23,7 @@ cd carsharing-api
 docker compose up --build -d
 ```
 
-# (Опционально) Масштабировать API
+# (Опционально) Масштабировать приложение — Nginx уже настроен на балансировку нагрузки по методу least_conn
 ```bash
 docker compose up --scale app=3 -d
 ```
