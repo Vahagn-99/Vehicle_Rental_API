@@ -97,7 +97,7 @@ http://localhost:8010
       ├── Manager.php
       └── Repositories
           └── Vehicle.php
-```bash
+```
 
 - `routes/` — маршруты API
 - `docker compose.yml` — описание контейнеров
