@@ -16,27 +16,42 @@
 # Клонировать репозиторий
 git clone https://github.com/Vahagn-99/Vehicle_Rental_API carsharing-api
 cd carsharing-api
+```
 
 # Запустить Docker-контейнеры
+```bash
 docker compose up --build -d
+```
 
 # (Опционально) Масштабировать API
+```bash
 docker compose up --scale api=3 -d
+```
 
 # скопировать .env
+```bash
 cp .env.example .env
+```
 
 # Установтиь зависмости
+```bash
 docker compose exec app composer install
+```
 
 # Генерировать ключ проекта
+```bash
 docker compose exec app key:generate
+```
 
 # Генерировать ключ jwt
+```bash
 docker compose exec app php artisan jwt:secret
+```
 
 # Применить миграции
+```bash
 docker compose exec app php artisan migrate --seed
+```
 
 ## 🌐 API Документация
 
