@@ -5,7 +5,7 @@
 ## 📦 Стек технологий
 
 - PHP 8.x + Laravel 10
-- MySQL / MariaDB
+- PostgreSQL + PGADMIN
 - Docker + Docker Compose
 - Nginx + PHP-FPM
 - OpenAPI (Swagger) для документации API
