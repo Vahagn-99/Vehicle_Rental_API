@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Base\Auth\AuthData;
 use App\Base\Auth\Manager as AuthManager;
+use App\Base\Auth\RegistrationData;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Renter;
 use Illuminate\Http\Request;
@@ -16,9 +17,57 @@ class AuthController extends Controller
      */
     public function __construct(
         private readonly AuthManager $manager,
-    )
-    {
+    ) {
         //
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/auth/registration",
+     *     summary="Регистрация пользователя",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name", "email", "password", "password_confirmation" ,"gender"},
+     *             @OA\Property(property="name", type="string", format="name"),
+     *             @OA\Property(property="email", type="string", format="email"),
+     *             @OA\Property(property="password", type="string", format="password"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password"),
+     *             @OA\Property(property="gender", type="string", format="male"),
+     *             example= {
+     *              "name": "user",
+     *              "email": "admin@gmail.com",
+     *              "password": "password",
+     *              "password_confirmation": "password",
+     *              "gender": "male"
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Успешная регистрация",
+     *         @OA\JsonContent(
+     *              @OA\Property(property="access_token", type="string"),
+     *              @OA\Property(property="token_type", type="string"),
+     *              @OA\Property(property="expires_in", type="integer")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=412,
+     *         description="Не валидные данные"
+     *     )
+     * )
+     */
+    public function registration(Request $request)
+    {
+        $token = $this->manager->registration(RegistrationData::validateAndCreate($request->only(['name', 'email', 'password', 'password_confirmation', 'gender'])));
+
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60
+        ]);
     }
 
     /**
@@ -55,7 +104,7 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $token = $this->manager->login(AuthData::from($request->only(['email', 'password'])));
+        $token = $this->manager->login(AuthData::validateAndCreate($request->only(['email', 'password'])));
 
         return response()->json([
             'access_token' => $token,
@@ -66,7 +115,7 @@ class AuthController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/auth/me",
+     *     path="/api/auth/profile",
      *     summary="Получить информацию о текущем пользователе",
      *     tags={"Auth"},
      *     security={{"bearerAuth": {}}},
@@ -77,7 +126,7 @@ class AuthController extends Controller
      *     )
      * )
      */
-    public function me()
+    public function profile()
     {
         return Renter::make($this->manager->getAuthUser());
     }

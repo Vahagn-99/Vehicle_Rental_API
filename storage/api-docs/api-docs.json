@@ -13,6 +13,87 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/auth/registration": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Регистрация пользователя",
+                "operationId": "222786d3e2fd46bd6270e57a31b2f1a1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "password_confirmation",
+                                    "gender"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "format": "name"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "gender": {
+                                        "type": "string",
+                                        "format": "male"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "example": {
+                                "name": "user",
+                                "email": "admin@gmail.com",
+                                "password": "password",
+                                "password_confirmation": "password",
+                                "gender": "male"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешная регистрация",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "type": "string"
+                                        },
+                                        "expires_in": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "412": {
+                        "description": "Не валидные данные"
+                    }
+                }
+            }
+        },
         "/api/auth/login": {
             "post": {
                 "tags": [
@@ -76,13 +157,13 @@
                 }
             }
         },
-        "/api/auth/me": {
+        "/api/auth/profile": {
             "get": {
                 "tags": [
                     "Auth"
                 ],
                 "summary": "Получить информацию о текущем пользователе",
-                "operationId": "4f405e33417b7b74565767c1a7b51231",
+                "operationId": "cd912e022fa4e7d00a92c3b77225aad6",
                 "responses": {
                     "200": {
                         "description": "Информация о пользователе",
@@ -333,194 +414,6 @@
                     }
                 ]
             }
-        },
-        "/api/v1/vehicles": {
-            "get": {
-                "tags": [
-                    "Vehicle"
-                ],
-                "summary": "Список всех ТС",
-                "operationId": "bcdde16293935e06d4c75c4339470415",
-                "responses": {
-                    "200": {
-                        "description": "Список ТС",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Vehicle"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/vehicles/{id}": {
-            "get": {
-                "tags": [
-                    "Vehicle"
-                ],
-                "summary": "Получить ТС по ID",
-                "operationId": "17b29272b3e37d1a2c440facdddecc7b",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "ТС найдено",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Vehicle"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/vehicles/{id}/status": {
-            "patch": {
-                "tags": [
-                    "Vehicle"
-                ],
-                "summary": "Обновить статус ТС",
-                "operationId": "7f30435a4b87830cc045be1b9a542311",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "status"
-                                ],
-                                "properties": {
-                                    "status": {
-                                        "type": "string",
-                                        "example": "active"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Статус обновлён",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "updated": {
-                                            "type": "boolean",
-                                            "example": true
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/vehicles/{id}/location": {
-            "patch": {
-                "tags": [
-                    "Vehicle"
-                ],
-                "summary": "Обновить координаты ТС",
-                "operationId": "a656587485077fbf886b199ed22c5217",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "latitude",
-                                    "longitude"
-                                ],
-                                "properties": {
-                                    "latitude": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": 40.7128
-                                    },
-                                    "longitude": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": -74.006
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Локация обновлена",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Vehicle"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
         }
     },
     "components": {
@@ -632,12 +525,12 @@
                         "type": "string"
                     },
                     "email": {
-                        "description": "Email",
+                        "description": "Почта",
                         "type": "string",
                         "format": "email"
                     },
-                    "phone": {
-                        "description": "Телефон",
+                    "gender": {
+                        "description": "Пол",
                         "type": "string"
                     },
                     "status": {
@@ -715,10 +608,6 @@
         {
             "name": "Renter",
             "description": "Renter"
-        },
-        {
-            "name": "Vehicle",
-            "description": "Vehicle"
         }
     ]
 }

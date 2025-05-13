@@ -7,6 +7,7 @@ use App\Base\Renter\Manager as RenterManager;
 use App\Base\Renter\UpdateBalance;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateBalanceRequest;
+use OpenApi\Annotations as OA;
 use App\Http\Resources\{
     OperationsHistory as OperationsHistoryResource,
     RentalHistory as RentalHistoryResource,

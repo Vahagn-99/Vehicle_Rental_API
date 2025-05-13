@@ -12,8 +12,8 @@ use OpenApi\Annotations as OA;
  *     description="Арендатор",
  *     @OA\Property(property="id", type="integer", format="int64", description="Идентификатор"),
  *     @OA\Property(property="name", type="string", description="Имя"),
- *     @OA\Property(property="email", type="string", format="email", description="Email"),
- *     @OA\Property(property="phone", type="string", description="Телефон"),
+ *     @OA\Property(property="email", type="string", format="email", description="Почта"),
+ *     @OA\Property(property="gender", type="string", description="Пол"),
  *     @OA\Property(property="status", type="integer", format="int64", description="Статус"),
  * )
  */
