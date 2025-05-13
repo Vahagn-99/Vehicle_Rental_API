@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Enums\VehicleStatus;
+use App\Models\Enums\VehicleAvailabilityStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,7 +19,7 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->string('vin')->unique();
             $table->string('number_plate')->unique();
-            $table->string('status', 255)->default(VehicleStatus::Preparing);
+            $table->string('availability_status', 255)->default(VehicleAvailabilityStatus::PREPARING);
             $table->json('location')->nullable();
 
             $table->timestamps();

@@ -9,6 +9,9 @@ class TransactionHistory extends Model
 {
     use HasFactory;
 
+    /** @var string */
+    public const TABLE_NAME = 'transaction_histories';
+
     /**
      * The attributes that are mass assignable.
      *

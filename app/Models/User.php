@@ -15,6 +15,9 @@ class User extends Authenticatable implements IRenter, JWTSubject
 {
     use HasFactory, Notifiable;
 
+    /** @var string */
+    public const TABLE_NAME = 'users';
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -79,9 +82,19 @@ class User extends Authenticatable implements IRenter, JWTSubject
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function getOperationsHistory() : HasMany
+    public function operationsHistory() : HasMany
     {
         return $this->hasMany(TransactionHistory::class, 'renter_id');
+    }
+
+    /**
+     * Получить аренды арендатора.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function rents() : HasMany
+    {
+        return $this->hasMany(Rent::class, 'renter_id');
     }
 
     //****************************************************************

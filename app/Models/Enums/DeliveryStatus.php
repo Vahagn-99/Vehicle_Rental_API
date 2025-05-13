@@ -4,7 +4,7 @@ namespace App\Models\Enums;
 
 use App\Support\Traits\HasSupport;
 
-enum VehicleStatus: int
+enum DeliveryStatus: int
 {
     use HasSupport;
 

@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Base\Vehicle\Location;
-use App\Models\Enums\VehicleStatus;
+use App\Models\Enums\VehicleAvailabilityStatus;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use PhpParser\Builder\EnumCase;
@@ -24,7 +24,7 @@ class VehicleFactory extends Factory
             'model_id' => Model::factory(),
             'vin' => strtoupper($this->faker->unique()->bothify('??##############')),
             'number_plate' => strtoupper($this->faker->bothify('???-###')),
-            'status' => VehicleStatus::random(),
+            'status' => VehicleAvailabilityStatus::random(),
             'location' => Location::from([
                 'latitude' => $this->faker->latitude(),
                 'longitude' => $this->faker->longitude(),

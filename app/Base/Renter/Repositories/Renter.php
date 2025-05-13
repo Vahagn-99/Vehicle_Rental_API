@@ -30,4 +30,16 @@ class Renter extends Repository
     {
         return $this->query()->find($id);
     }
+
+    /**
+     * Получить арендатора по ID.
+     *
+     * @param int $id
+     * @param int $vehicle_id
+     * @return void
+     */
+    public function checkCanRentVehicle(int $id, int $vehicle_id)
+    {
+        $this->query()->join(RenterModel::TABLE_NAME, 'renters.id', '=', 'vehicles.renter_id');
+    }
 }

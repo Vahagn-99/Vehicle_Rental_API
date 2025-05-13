@@ -11,13 +11,8 @@ class CheckBalanceStatus extends QueueableListener
 {
     use InteractsWithQueue;
 
-    /**
-     * Create the event listener.
-     */
-    public function __construct()
-    {
-        //
-    }
+    /** @var string */
+    public $queue = 'balance_updating';
 
     public function shouldQueue(BalanceUpdated $event) : bool
     {

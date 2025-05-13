@@ -3,40 +3,43 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Base\Vehicle\Location;
-use App\Base\Vehicle\Manager as VehicleManager;
+use App\Base\Renter\Rent\Manager as RentManager;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Vehicle;
 use App\Models\Enums\VehicleAvailabilityStatus;
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Enum;
 use OpenApi\Annotations as OA;
 
-class VehicleController extends Controller
+class RentController extends Controller
 {
     /**
-     * @param \App\Base\Vehicle\Manager $manager
+     * @param \App\Base\Renter\Rent\Manager $manager
      */
     public function __construct(
-        private readonly VehicleManager $manager
+        private readonly RentManager $manager
     ) {
         //
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/vehicles/availables",
-     *     summary="Список всех доступных ТС",
-     *     tags={"Vehicle"},
+     * @OA\POST(
+     *     path="/api/v1/rents/{vehicle_id}",
+     *     summary="Аренда ТС",
+     *     tags={"Rent"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Response(
      *         response=200,
-     *         description="Список дотупных ТС",
-     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Vehicle"))
+     *         description="Аренда ТС",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Rent"))
      *     )
      * )
      */
-    public function availables()
+    public function rent(int $vehicle_id)
     {
+        $this->manager->rent(Auth::id(), $vehicle_id);
+
         return Vehicle::collection($this->manager->getAvailableItems());
     }
 

@@ -3,7 +3,7 @@
 namespace App\Base\Vehicle;
 
 use App\Base\Vehicle\Repositories\Vehicle as VehicleRepository;
-use App\Models\Enums\VehicleStatus;
+use App\Models\Enums\VehicleAvailabilityStatus;
 use App\Models\Vehicle as VehicleModel;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -19,13 +19,16 @@ class Manager
     }
 
     /**
-     * Получить все автомобили.
+     * Получить все доступные автомобили.
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getAll() : Collection
+    public function getAvailableItems() : Collection
     {
-        return $this->vehicle_repository->getAll();
+        return $this->vehicle_repository
+            ->getBuilder()
+            ->where("status", VehicleAvailabilityStatus::AVAILABLE)
+            ->get();
     }
 
     /**
@@ -43,10 +46,10 @@ class Manager
      * Обновляет статус автомобиля.
      *
      * @param int $vehicle_id
-     * @param \App\Models\Enums\VehicleStatus $status
+     * @param \App\Models\Enums\VehicleAvailabilityStatus $status
      * @return VehicleModel
      */
-    public function updateStatus(int $vehicle_id, VehicleStatus $status) : VehicleModel
+    public function updateStatus(int $vehicle_id, VehicleAvailabilityStatus $status) : VehicleModel
     {
         /** @var VehicleModel $vehicle */
         $vehicle = $this->vehicle_repository->get($vehicle_id);
@@ -69,7 +72,6 @@ class Manager
     {
         /** @var VehicleModel $vehicle */
         $vehicle = $this->vehicle_repository->get($vehicle_id);
-
 
         $vehicle->location = $location;
 

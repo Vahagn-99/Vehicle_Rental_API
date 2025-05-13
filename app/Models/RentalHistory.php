@@ -10,6 +10,9 @@ class RentalHistory extends Model
 {
     use HasFactory;
 
+    /** @var string */
+    public const TABLE_NAME = 'rental_histories';
+
     /**
      * The attributes that are mass assignable.
      *

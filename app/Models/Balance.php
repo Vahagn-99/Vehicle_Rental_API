@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Balance extends Model implements ShouldLockDuringGeneration
 {
-    /** @use HasFactory<\Database\Factories\BalanceFactory> */
-    use HasFactory;
+    /** @var string */
+    public const TABLE_NAME = 'balances';
 
     protected $casts = [
         'status' => BalanceStatus::class,

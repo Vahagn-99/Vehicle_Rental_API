@@ -15,7 +15,7 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
     });
 
     Route::prefix('vehicles')->group(function () {
-        Route::get('/', [VehicleController::class, 'all']);
+        Route::get('/availables', [VehicleController::class, 'availables']);
         Route::get('{id}', [VehicleController::class, 'item']);
         Route::patch('{id}/status', [VehicleController::class, 'updateStatus']);
         Route::patch('{id}/location', [VehicleController::class, 'updateLocation']);
